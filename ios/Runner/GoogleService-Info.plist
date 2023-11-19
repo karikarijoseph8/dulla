@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>74019305705-cjhuo58lsn28rbu6lpe8s2htoe47cjqh.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.74019305705-cjhuo58lsn28rbu6lpe8s2htoe47cjqh</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAZaZdzirGZCHIdYksxRYnWdQgovCL51o4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>74019305705</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ribedo.orbit</string>
+	<key>PROJECT_ID</key>
+	<string>orbit-devbox-96950</string>
+	<key>STORAGE_BUCKET</key>
+	<string>orbit-devbox-96950.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:74019305705:ios:2aead5d731bce456659878</string>
+</dict>
+</plist>

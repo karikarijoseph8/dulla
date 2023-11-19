@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "958092677752",
+    "firebase_url": "https://orbit-devbox-2398e-default-rtdb.firebaseio.com",
+    "project_id": "orbit-devbox-2398e",
+    "storage_bucket": "orbit-devbox-2398e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:958092677752:android:d52491595ff5280933938d",
+        "android_client_info": {
+          "package_name": "com.ribedo.orbit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "958092677752-710sokil43s2pplh10qnn0d9n4t99t9b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ribedo.orbit",
+            "certificate_hash": "b87af79199bcaa6f6aa18354b04016103ee84644"
+          }
+        },
+        {
+          "client_id": "958092677752-n1ir7qeuq32gt9fbifkf3fnmicqrd4lb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgmXJEfE6QvOCRUaCK4MBCIpx9ubPmnBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "958092677752-lm2l6t6fdqbres9bsrnhirq8sskvnljr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "958092677752-c34kf0lvv4s2uogcot11560iirl8n31p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ribedo.orbit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:958092677752:android:091ced5c2347726233938d",
+        "android_client_info": {
+          "package_name": "com.ribedo.orbit_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "958092677752-pr3t1ps7ttur450m952g5eg0a8qack37.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ribedo.orbit_driver",
+            "certificate_hash": "88a36e07c176fa53f8db39e0a6895c911a6e2480"
+          }
+        },
+        {
+          "client_id": "958092677752-qtvskfij1c5si1qoqnp0mgaqgharmgpm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ribedo.orbit_driver",
+            "certificate_hash": "b87af79199bcaa6f6aa18354b04016103ee84644"
+          }
+        },
+        {
+          "client_id": "958092677752-n1ir7qeuq32gt9fbifkf3fnmicqrd4lb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgmXJEfE6QvOCRUaCK4MBCIpx9ubPmnBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "958092677752-lm2l6t6fdqbres9bsrnhirq8sskvnljr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "958092677752-c34kf0lvv4s2uogcot11560iirl8n31p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ribedo.orbit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
