@@ -49,14 +49,6 @@ class _SplashScreenState extends State<SplashScreen> {
     );
 
     setupPositionLocator(context);
-
-    // Delayed navigation to the HomeController after 5 seconds
-    // Future.delayed(const Duration(seconds: 5), () {
-    //   Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => HomeController()),
-    //   );
-    // });
   }
 
   Future<void> setupPositionLocator(context) async {
@@ -94,10 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Scaffold(
         backgroundColor: AppColors.mainYellow,
         body: Center(
-          child: Image.asset(
-            "assets/images/orbit.png",
-            width: appScale.scaleWidth(69.45), // Width = 50
-          ),
+          child: Text("SPLASH SCREEN"),
         ),
       ),
     );
@@ -143,25 +132,6 @@ class _HomeControllerState extends State<HomeController> {
       },
     );
   }
-
-  // Future<void> fetchUserData(BuildContext context) async {
-  //   final db = Provider.of<FirebaseFutures>(context, listen: false);
-  //   final AuthService auth = context.read<AuthService>();
-  //   //SharePreferencesHelper sharedPreferencesHelper = SharePreferencesHelper();
-  //   try {
-  //     final userData = await db.getUserData(auth.getCurrentUser()!.uid);
-
-  //     final userData2 = userData as UserHive;
-  //     boxUserHive.put(userData.user_ID, userData);
-  //     //sharedPreferencesHelper.setUserDetail(userData);
-
-  //     print("User Data: ${userData.deleted_account}");
-  //     print("User Data: ${userData.full_name}");
-  //     print("User Data: ${userData.email}");
-  //   } catch (e) {
-  //     print("Error: $e");
-  //   }
-  // }
 }
 
 class Loading extends StatefulWidget {

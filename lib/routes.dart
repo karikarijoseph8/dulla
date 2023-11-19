@@ -59,16 +59,6 @@ final Map<String, WidgetBuilder> routes = {
 };
 
 final Map<String, PageRouteBuilder> customRoutes = {
-  //AUTHENTICATION ROUTES START
-  // '/emailSignUp': (BuildContext context) => const EmailSignupScreen(),
-  // '/setupAccountEmailSignUp': (BuildContext context) =>
-  //     const SetupAccountEmailSignUp(),
-  // '/phoneSignUp': (BuildContext context) => const PhoneSignupScreen(),
-  // '/otpScreenEmailSignUp': (BuildContext context) =>
-  //     const OTPScreenEmailSignUp(),
-  // '/otpScreenPhoneAuth': (BuildContext context) => const OTPScreenPhoneAuth(),
-  // //AUTHENTICATION ROUTES END
-
   // //MENU ROUTES START
   //'/menu': (BuildContext context) => const Menu(),
   '/menuHelpCenter': SlidePageRoute(builder: (_) => const HelpCenterScreen()),
