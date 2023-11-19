@@ -31,29 +31,19 @@ class OTPSignInScreen extends StatefulWidget {
 
 class _OTPSignInScreenState extends State<OTPSignInScreen> {
   TextEditingController _controller1 = TextEditingController();
-  TextEditingController _controller2 = TextEditingController();
-  TextEditingController _controller3 = TextEditingController();
-  TextEditingController _controller4 = TextEditingController();
-  TextEditingController _controller5 = TextEditingController();
-  TextEditingController _controller6 = TextEditingController();
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   int _seconds = 30;
   bool _countingDown = true;
 
   final _focusNode1 = FocusNode();
-  final _focusNode2 = FocusNode();
-  final _focusNode3 = FocusNode();
-  final _focusNode4 = FocusNode();
+
   FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     _controller1.addListener(_onTextChanged);
-    _controller2.addListener(_onTextChanged);
-    _controller3.addListener(_onTextChanged);
-    _controller4.addListener(_onTextChanged);
-    _controller5.addListener(_onTextChanged);
-    _controller6.addListener(_onTextChanged);
+
     startCountdown();
 
     _focusNode1.addListener(() {
@@ -66,11 +56,7 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
   @override
   void dispose() {
     _controller1.dispose();
-    _controller2.dispose();
-    _controller3.dispose();
-    _controller4.dispose();
-    _controller5.dispose();
-    _controller6.dispose();
+
     super.dispose();
   }
 
@@ -123,7 +109,9 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // otpTextField(controller: _controller1, fieldNumber: 1),
+                    otpTextField(
+                      controller: _controller1,
+                    ),
                     // otpTextField(controller: _controller2, fieldNumber: 2),
                     // otpTextField(controller: _controller3, fieldNumber: 3),
                     // otpTextField(controller: _controller4, fieldNumber: 4),
@@ -163,12 +151,6 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
                         // if (fetching == 'done') {
                         //   await Future.delayed(const Duration(seconds: 2));
                         //   Navigator.pop(context);
-
-                        //   Navigator.popUntil(
-                        //       context, (_) => !Navigator.canPop(context));
-                        // } else {
-                        //   print("Failled");
-                        // }
                       } else {
                         //Navigator.pop(context);
                         Navigator.of(context).pushReplacement(SlideUpRoute(
@@ -206,16 +188,8 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
                         ? null
                         : () async {
                             showLoadingDialog(context);
-                            String returned = await sendOTPSMS(
-                                context, authData.phoneNumber!);
-                            Navigator.pop(context);
 
-                            if (returned != 'SMS-FAILED') {
-                              showMessageSnackBar(
-                                  context, "Orbit OTP Code Sent");
-                            } else {
-                              print(returned);
-                            }
+                            Navigator.pop(context);
                           },
                     child: Text(
                       _countingDown ? '$_seconds' : 'Resend',
@@ -259,68 +233,6 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
     });
   }
 
-  // Future<String> fetchUserData(BuildContext context) async {
-  //   final db = Provider.of<FirebaseFutures>(context, listen: false);
-  //   final AuthService auth = context.read<AuthService>();
-  //   //SharePreferencesHelper sharedPreferencesHelper = SharePreferencesHelper();
-  //   try {
-  //     await db.getUserDataToHive(auth.getCurrentUser()!.uid);
-
-  //     // print("Fetched Data ${newUserData.full_name}");
-  //     // print("Fetched Data ${newUserData.email}");
-  //     // print("Fetched Data ${newUserData.phone}");
-  //     // print("Fetched Data ${newUserData.full_name}");
-  //     await Future.delayed(const Duration(seconds: 2));
-
-  //     return 'done';
-  //   } catch (e) {
-  //     print("Error: $e");
-
-  //     return 'faild';
-  //   }
-  // }
-
-  // Future<bool> _checkIfEmailExist() async {
-  //   final AuthService auth = context.read<AuthService>();
-  //   String uid = auth.getCurrentUser()!.uid;
-
-  //   return _firestore
-  //       .collection('userData')
-  //       .doc(uid)
-  //       //.where('email', isEqualTo: email)
-  //       .get()
-  //       .then((value) {
-  //     if (value.exists) {
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   });
-  // }
-
-  bool verifyOTP(String generatedCode) {
-    String digit1 = _controller1.text;
-    String digit2 = _controller2.text;
-    String digit3 = _controller3.text;
-    String digit4 = _controller4.text;
-
-    // Concatenate the digits to form the user-entered code
-    String userEnteredCode = digit1 + digit2 + digit3 + digit4;
-    // Compare the user-entered code with the generated code
-    return userEnteredCode == generatedCode;
-  }
-
-  Future<String> sendOTPSMS(BuildContext context, String to) async {
-    final TwilioService twilioService = context.read<TwilioService>();
-    final RegistrationAuthData authData = context.read<RegistrationAuthData>();
-
-    String returned = await twilioService.sendTwilioSMS(to);
-    authData.setOTPCode(returned);
-
-    print(returned);
-    return returned;
-  }
-
   Future<String> authenticatePhoneAuthUser(verificationId) async {
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -348,34 +260,10 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
   }
 
   String getSMSCode() {
-    String digit1 = _controller1.text;
-    String digit2 = _controller2.text;
-    String digit3 = _controller3.text;
-    String digit4 = _controller4.text;
-    String digit5 = _controller5.text;
-    String digit6 = _controller6.text;
-    String userEnteredCode =
-        digit1 + digit2 + digit3 + digit4 + digit5 + digit6;
-    // Concatenate the digits to form the user-entered code
+    String userEnteredCode = _controller1.text.trim();
+
     return userEnteredCode;
   }
-
-//RESEND COUNTDOWN
-  // void startCountdown() {
-  //   const oneSec = const Duration(seconds: 1);
-  //   Timer.periodic(oneSec, (Timer timer) {
-  //     if (_seconds == 0) {
-  //       setState(() {
-  //         _countingDown = false;
-  //       });
-  //       timer.cancel();
-  //     } else {
-  //       setState(() {
-  //         _seconds--;
-  //       });
-  //     }
-  //   });
-  // }
 
   void startCountdown() {
     const oneSec = const Duration(seconds: 1);
