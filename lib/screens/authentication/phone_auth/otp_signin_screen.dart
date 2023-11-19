@@ -11,7 +11,6 @@ import 'package:orbit/routes.dart';
 import 'package:orbit/screens/authentication/phone_auth/accout_setup_phoneauth_screen.dart';
 import 'package:orbit/screens/authentication/registration_auth_data.dart';
 import 'package:orbit/service/providers/auth_service.dart';
-import 'package:orbit/trash/twilio_servce.dart';
 import 'package:provider/provider.dart';
 import 'package:truncate/truncate.dart';
 import '../../../../components/app_alerts_dialogs.dart';
@@ -107,7 +106,7 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
               ),
               Form(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     otpTextField(
                       controller: _controller1,
@@ -148,9 +147,6 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
 
                         Navigator.popUntil(
                             context, (_) => !Navigator.canPop(context));
-                        // if (fetching == 'done') {
-                        //   await Future.delayed(const Duration(seconds: 2));
-                        //   Navigator.pop(context);
                       } else {
                         //Navigator.pop(context);
                         Navigator.of(context).pushReplacement(SlideUpRoute(
@@ -160,12 +156,6 @@ class _OTPSignInScreenState extends State<OTPSignInScreen> {
                         ));
                       }
                     }
-
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => AccountSetupEmailAuth()),
-                    // );
                   },
                   buttonText: 'Continue',
                   btnColor: AppColors.mainYellow,
