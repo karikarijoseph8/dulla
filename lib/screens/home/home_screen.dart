@@ -485,8 +485,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   setState(() {
                     isDriverNotFound = isCarsAvailable != true;
                     if(isDriverNotFound){
+                      final routeDataProvider = Provider.of<RouteDataProvider>(
+                          context, listen: false);
                       Fluttertoast.showToast(
-                          msg: "Sorry, no cars available for your route at the moment. Please try different cars",
+                          // msg: "Sorry, no cars available for your route at the moment. Please try different cars",
+                          msg: "${routeDataProvider.carAndPrice.categoryName} cars are not available",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,

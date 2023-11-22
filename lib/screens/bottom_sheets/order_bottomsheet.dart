@@ -408,15 +408,13 @@ class _StreamCarCategoryState extends State<StreamCarCategory> {
 
   void _handleCardTap(int cardIndex, CarCategoryEntity carCat,
       RouteDataProvider routeDataProvider) {
-
-
-    widget.callbackCarsAvailableOrNot.call(carCat.availableCars > 0);
     setState(() {
       _selectedCardIndex = cardIndex;
       tripFare = calculateFare(carCat, routeDataProvider.directionDetails);
       routeDataProvider.updateTripFare(tripFare);
       routeDataProvider.updateCarAndPrice(carCat);
     });
+    widget.callbackCarsAvailableOrNot.call(carCat.availableCars > 0);
   }
 
   @override
