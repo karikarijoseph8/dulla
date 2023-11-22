@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:orbit/components/buttons/round_btn.dart';
 import 'package:orbit/components/buttons/submit_btn.dart';
 import 'package:orbit/components/customfont/customFonts.dart';
 import 'package:orbit/constants/app_colors.dart';
@@ -195,7 +194,7 @@ class _PanelWidgetState extends State<RateDriverPanelWidget> {
                 width: MediaQuery.of(context).size.width * 0.43,
                 height: 50,
                 child: SubmitButton(
-                  onPressed: widget.cancelRating,
+                  onPressed: widget.submitRating,
                   buttonText: 'Submit',
                   btnColor: AppColors.mainYellow,
                 ),

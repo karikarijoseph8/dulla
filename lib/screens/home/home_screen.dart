@@ -707,12 +707,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               visible: rateDriverSheetVisibility,
               child: RateDriverBottomSheet(
                 submitRating: () {
-                  setState(() {
-                    rateDriverSheetVisibility = false;
-                  });
+                  hideRatingWidgets();
                 },
                 cancelRating: () {
-                  rateDriverSheetVisibility = false;
+                  hideRatingWidgets();
                 },
               ),
             ),
@@ -724,6 +722,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 visible: back2SeacrhVisibility,
                 child: Back2SearchButton(
                   onPressed: () async {
+                    print('dinesh back pressedd Back2SearchButton');
                     setState(() {
                       isDriverNotFound = false;
                     });
@@ -915,6 +914,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       Map<dynamic, dynamic>? data = snapshot.value as Map<dynamic, dynamic>?;
       // Map<dynamic, dynamic>.from(snapshot.value as Map);
       if (event.snapshot.value == null) {
+        return;
+      }
+
+      if(data!['driverID'] == 'waiting'){
+        print('dinesh waiting');
         return;
       }
 
@@ -1124,6 +1128,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       if (status == 'ended') {
         showTripCompletionDialog(ctx);
+        print('dinesh showing rate dialog');
         showRateDriver();
         resetAppAtArriving();
         rideRef.onDisconnect();
@@ -1275,6 +1280,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {
       showSearchingForDriverWidget = true;
       showOrderBottomSheet = false;
+      back2SeacrhVisibility = false;
       //showConfirmOrderBottomSheetWidget = false;
     });
   }
@@ -1309,7 +1315,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   //void resetApp
-
   void startGeofireListener() {
     Geofire.initialize('availDrivers');
     DatabaseReference driverServiceTypeRef = FirebaseDatabase.instance.ref();
@@ -1732,19 +1737,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       showOrderBottomSheet = true;
     });
     showSearchingForDriverWidget = false;
+    back2SeacrhVisibility = true;
     await getDirection(appScale, backBtn_pressed);
     //rideSubscription.cancel();
   }
 
   void showRateDriver() {
-    showDriverOntripSheet = false;
-    rateDriverSheetVisibility = true;
+    setState(() {
+      showDriverOntripSheet = false;
+      rateDriverSheetVisibility = true;
+    });
   }
 
   void defaultAppState() {
     markers.clear();
     _polylines.clear();
-    rateDriverSheetVisibility = false;
+    setState(() {
+      rateDriverSheetVisibility = false;
+    });
+  }
+
+  void hideRatingWidgets() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      resetAppAtArriving();
+      resetAppAtArriving();
+      setState(() {
+        updateDriversOnMap();
+        rateDriverSheetVisibility = false;
+      });
+    });
   }
 
   // void _calculateDistance(
