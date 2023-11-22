@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:orbit/components/app_alerts_dialogs.dart';
 import 'package:orbit/components/app_scale.dart';
 import 'package:orbit/components/home/menu_button.dart';
-import 'package:orbit/components/maptools/jobber.dart';
 import 'package:orbit/constants/app_colors.dart';
 import 'package:orbit/constants/app_keys.dart';
 import 'package:orbit/constants/ride_variable.dart';
@@ -33,6 +33,7 @@ import 'package:orbit/service/providers/auth_service.dart';
 import 'package:orbit/service/providers/pick_location_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
 import '../../components/home/back2search_button.dart';
 import '../../components/home/home_address_card.dart';
 import '../../models/trip/directiondetails.dart';
@@ -600,7 +601,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         );
                       }
                   });
-                  cancelRideRequest();
+                  cancelRideRequest(appScale,false);
 
                   // var response = await Navigator.of(context).push(
                   //   SlideUpRoute(
@@ -1720,7 +1721,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-  void cancelRideRequest() {
+  Future<void> cancelRideRequest(AppScale appScale, bool backBtn_pressed) async {
     updateMapPadding(const EdgeInsets.only(
       bottom: 400, //310
     ));
@@ -1728,7 +1729,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       showOrderBottomSheet = true;
     });
     showSearchingForDriverWidget = false;
-
+    await getDirection(appScale, backBtn_pressed);
     //rideSubscription.cancel();
   }
 
