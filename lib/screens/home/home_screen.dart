@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:orbit/components/app_alerts_dialogs.dart';
@@ -101,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 /////////////////////////////////////////////
 
   bool showConfirmOrderBottomSheetWidget = false;
+  bool isDriverNotFound = false;
 
   EdgeInsets _currentMapPadding = EdgeInsets.only(bottom: 150);
   PanelController _panelController = PanelController();
@@ -464,6 +466,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Visibility(
               visible: showOrderBottomSheet,
               child: OrderBottomSheet(
+                isDriverNotFound: isDriverNotFound,
                 onOrderPressed: () {
                   availableDrivers = NearbyDriverBot.nearbyDriverList;
                   setState(() {
@@ -477,6 +480,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                   //print("It has been pressed");
                 },
+                callbackCarsAvailableOrNot: (bool isCarsAvailable){
+                  setState(() {
+                    isDriverNotFound = isCarsAvailable != true;
+                    if(isDriverNotFound){
+                      Fluttertoast.showToast(
+                          msg: "Sorry, no cars available for your route at the moment. Please try different cars",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                    }
+                  });
+                }
               ),
             ),
             Visibility(
@@ -562,7 +581,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Visibility(
               visible: showSearchingForDriverWidget,
               child: SearchingForDriver(
-                cancelDriverSearch: () async {
+                cancelDriverSearch: ({bool? isDriverNotFound}) async {
+                  setState(() {
+                    this.isDriverNotFound = isDriverNotFound == true;
+                    if(this.isDriverNotFound){
+                        showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Uh ho...'),
+                            content: const Text('No drivers are available for your route right now. Please try again later. Thank you for your patience'),
+                            actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                            ],
+                          ),
+                        );
+                      }
+                  });
                   cancelRideRequest();
 
                   // var response = await Navigator.of(context).push(
@@ -683,6 +720,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 visible: back2SeacrhVisibility,
                 child: Back2SearchButton(
                   onPressed: () async {
+                    setState(() {
+                      isDriverNotFound = false;
+                    });
                     dismissRideConfirmSheet();
                     var response =
                         await Navigator.of(context).push(SlideUpRoute(
@@ -704,20 +744,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   //void closeDriverRating() {}
 
   void findDriver() {
-    if (availableDrivers.length == 0) {
+    if (availableDrivers.isEmpty) {
       print("Request log: No Driver");
       //cancelRequest();
       /// resetApp();
       //noDriverFound();
       return;
     }
+    final routeDataProvider =
+    Provider.of<RouteDataProvider>(context, listen: false);
 
     print("Request log: Driver Found");
-    var driver = availableDrivers[0];
-    notifyDriver(driver);
+    for (var driver in availableDrivers) {
+      print("Request log: routeDataProvider.carAndPrice.categoryName ${routeDataProvider.carAndPrice.categoryName}");
+
+      print("Request log: (driver.serviceType) ${driver}");
+
+      var notifySelectedCarDrivers = ((driver.serviceType) == (routeDataProvider.carAndPrice.categoryName));
+      if(notifySelectedCarDrivers) {
+        print('notify driver');
+        notifyDriver(driver);
+        print("Driver Key: ${driver.key}");
+      }
+    }
+    // var driver = availableDrivers[0];
+    // notifyDriver(driver);
     //availableDrivers.removeAt(0);
 
-    print("Driver Key: ${driver.key}");
+    // print("Driver Key: ${driver.key}");
   }
 
   void notifyDriver(NearbyDriver driver) {
@@ -1257,7 +1311,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     DatabaseReference driverServiceTypeRef = FirebaseDatabase.instance.ref();
     Geofire.queryAtLocation(
             locationHiveData!.latitude, locationHiveData!.longitude, 5)!
-        .listen((map) {
+        .listen((map) async {
       if (map != null) {
         var callBack = map['callBack'];
         print("Map callback: $map");
@@ -1266,14 +1320,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           case Geofire.onKeyEntered:
             NearbyDriver nearbyDriver = NearbyDriver(
                 longitude: 0, key: '', latitude: 0, serviceType: '');
-            String service = getServiceType(driverServiceTypeRef, map);
-
+            String service = await getServiceType(driverServiceTypeRef, map);
+            print('sservices $service');
             nearbyDriver.key = map['key'];
             nearbyDriver.latitude = map['latitude'];
             nearbyDriver.longitude = map['longitude'];
             nearbyDriver.serviceType = service;
-            NearbyDriverBot.nearbyDriverList.add(nearbyDriver);
-
+            NearbyDriverBot.addNearbyLocation(nearbyDriver);
+            print('sservices ${NearbyDriverBot.nearbyDriverList.length}');
             if (nearbyDriversKeysLoaded) {
               updateDriversOnMap();
             }
@@ -1288,13 +1342,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             NearbyDriver nearbyDriver = NearbyDriver(
                 latitude: 0, longitude: 0, key: '', serviceType: '');
 
-            String service = getServiceType(driverServiceTypeRef, map);
+            String service = await getServiceType(driverServiceTypeRef, map);
 
             nearbyDriver.key = map['key'];
             nearbyDriver.latitude = map['latitude'];
             nearbyDriver.longitude = map['longitude'];
             nearbyDriver.serviceType = service;
-
             NearbyDriverBot.updateNearbyLocation(nearbyDriver);
             updateDriversOnMap();
             break;
@@ -1310,16 +1363,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  String getServiceType(driverServiceTypeRef, dynamic map) {
-    String serviceType = '';
+  Future<String> getServiceType(driverServiceTypeRef, dynamic map) {
+    Completer<String> completer = Completer<String>();
     DatabaseReference driverServiceType =
         driverServiceTypeRef.child('availDrivers/${map['key']}/serviceType');
 
     driverServiceType.onValue.listen((DatabaseEvent databaseEvent) {
-      serviceType = databaseEvent.snapshot.value.toString();
+      String serviceType = databaseEvent.snapshot.value.toString();
+      print('service -- $serviceType');
+      completer.complete(serviceType);
     });
 
-    return serviceType;
+    return completer.future;
   }
 
   void updateDriversOnMap() {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -74,15 +75,33 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void didChangeDependencies() {
-    final PickLocationProvider pickupLocation =
-        Provider.of<PickLocationProvider>(context, listen: false);
-
-    pickupController.text = pickupLocation.getCurrentLocation.placeName;
-
-    if (widget.backToSeach == true) {
-      destinationController.text = pickupLocation.placeName;
-    }
     super.didChangeDependencies();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print('dinesh search...');
+      final PickLocationProvider pickupLocation =
+      Provider.of<PickLocationProvider>(context, listen: false);
+
+      pickupController.text = pickupLocation.getCurrentLocation.placeName;
+
+      //initial setting data
+      final RouteDataProvider routeDataProvider =
+      Provider.of<RouteDataProvider>(context, listen: false);
+
+      // Update pickup address to routeDataProvider
+      routeDataProvider.updatePickupAddress(pickupLocation.getCurrentLocation);
+
+      if (widget.backToSeach == true) {
+        try {
+          // Accessing the late variable
+          destinationController.text = routeDataProvider.dropOffLocation.placeName;
+        } catch (e) {
+          if (kDebugMode) {
+            print('Error: $e');
+          }
+        }
+      }
+    });
   }
 
   @override

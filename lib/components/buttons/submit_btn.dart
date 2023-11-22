@@ -8,19 +8,24 @@ class SubmitButton extends StatelessWidget {
   final String buttonText;
   final bool? fullWidth;
   final Color btnColor;
+  final bool isDisabled;
+
   const SubmitButton({
     Key? key,
     required this.onPressed,
     required this.buttonText,
     this.fullWidth,
     required this.btnColor,
+    this.isDisabled = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: btnColor,
+        backgroundColor: isDisabled
+            ? btnColor.withOpacity(0.5)
+            : btnColor,
         elevation: 1,
         shadowColor: Colors.transparent,
         shape: RoundedRectangleBorder(
@@ -32,7 +37,7 @@ class SubmitButton extends StatelessWidget {
                 : null
             : null,
       ),
-      onPressed: onPressed,
+      onPressed:  isDisabled ? null : onPressed,
       child: Text(
         buttonText,
         style: CustomFonts.poppins(

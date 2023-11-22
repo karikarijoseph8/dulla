@@ -19,10 +19,13 @@ class OrderBottomSheet extends StatelessWidget {
   const OrderBottomSheet({
     super.key,
     required this.onOrderPressed,
+    required this.isDriverNotFound,
+    required this.callbackCarsAvailableOrNot,
   });
 
   final VoidCallback onOrderPressed;
-
+  final bool isDriverNotFound;
+  final Function(bool) callbackCarsAvailableOrNot;
   @override
   Widget build(BuildContext context) {
     return SlidingUpPanel(
@@ -46,6 +49,8 @@ class OrderBottomSheet extends StatelessWidget {
       body: Container(),
       panelBuilder: (controller) => ConfirmPanelWidget(
         onOrderPressed: onOrderPressed,
+        isDriverNotFound: isDriverNotFound,
+        callbackCarsAvailableOrNot: this.callbackCarsAvailableOrNot,
       ),
     );
   }
@@ -55,8 +60,12 @@ class ConfirmPanelWidget extends StatelessWidget {
   const ConfirmPanelWidget({
     super.key,
     required this.onOrderPressed,
+    required this.isDriverNotFound,
+    required this.callbackCarsAvailableOrNot,
   });
   final VoidCallback onOrderPressed;
+  final Function(bool) callbackCarsAvailableOrNot;
+  final bool isDriverNotFound;
   @override
   Widget build(BuildContext context) {
     Padding(padding: EdgeInsets.zero);
@@ -152,7 +161,7 @@ class ConfirmPanelWidget extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          StreamCarCategory(),
+          StreamCarCategory(callbackCarsAvailableOrNot: this.callbackCarsAvailableOrNot,),
           SizedBox(
             height: 40,
           ),
@@ -163,6 +172,7 @@ class ConfirmPanelWidget extends StatelessWidget {
               onPressed: onOrderPressed,
               buttonText: 'ORDER',
               btnColor: AppColors.mainYellow,
+              isDisabled: isDriverNotFound,
             ),
           ),
         ],
@@ -369,16 +379,17 @@ class DestinationTile extends StatelessWidget {
 
 class StreamCarCategory extends StatefulWidget {
   const StreamCarCategory({
+    required this.callbackCarsAvailableOrNot,
     super.key,
   });
-
+  final Function(bool) callbackCarsAvailableOrNot;
   @override
   State<StreamCarCategory> createState() => _StreamCarCategoryState();
 }
 
 class _StreamCarCategoryState extends State<StreamCarCategory> {
   int _selectedCardIndex = 0;
-  late CarCategoryEntity carCat;
+  bool isDefaultFareAdded = false;
   late double tripFare;
   late DatabaseReference availableCarRef;
   late StreamSubscription<DatabaseEvent> rideSubscription;
@@ -397,6 +408,9 @@ class _StreamCarCategoryState extends State<StreamCarCategory> {
 
   void _handleCardTap(int cardIndex, CarCategoryEntity carCat,
       RouteDataProvider routeDataProvider) {
+
+
+    widget.callbackCarsAvailableOrNot.call(carCat.availableCars > 0);
     setState(() {
       _selectedCardIndex = cardIndex;
       tripFare = calculateFare(carCat, routeDataProvider.directionDetails);
@@ -421,7 +435,6 @@ class _StreamCarCategoryState extends State<StreamCarCategory> {
       availableCarList.clear();
       final Map<dynamic, dynamic> data =
           snapshot.value as Map<dynamic, dynamic>;
-
       data.forEach((key, value) {
         availableCarList.add(value);
       });
@@ -475,6 +488,7 @@ class _StreamCarCategoryState extends State<StreamCarCategory> {
             List<CarCategoryEntity> modifiedCarCategoryData =
                 carCategoryData!.map(
               (carCategoryEntity) {
+                print('carCategoryEntity ${carCategoryEntity.categoryName}');
                 if (carCategoryEntity.categoryName == 'Orbit Taxi') {
                   //availableCars = eliteCars;
 
@@ -551,8 +565,7 @@ class _StreamCarCategoryState extends State<StreamCarCategory> {
               },
             ).toList();
 
-            print("Modified Elite Cars $modifiedCarCategoryData ");
-
+            print("Modified Elite Cars ${modifiedCarCategoryData.length} ");
             return Container(
               height: 82,
               child: ListView(
@@ -567,6 +580,15 @@ class _StreamCarCategoryState extends State<StreamCarCategory> {
                     //   onTap: () => _handleCardTap(index, carCat, routeDataProvider),
                     // );
 
+                    //for initial time
+                    if (!isDefaultFareAdded && _selectedCardIndex == index) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                          final routeDataProvider = Provider.of<RouteDataProvider>(
+                              context, listen: false);
+                          _handleCardTap(_selectedCardIndex, carCat, routeDataProvider);
+                      });
+                      isDefaultFareAdded = true;
+                    }
                     return SelectCarCard(
                       carCat: carCat,
                       isSelected: _selectedCardIndex == index,

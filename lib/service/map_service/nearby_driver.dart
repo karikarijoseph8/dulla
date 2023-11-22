@@ -21,4 +21,19 @@ class NearbyDriverBot {
     print(
         "Getting nearbydriver[nearbyDriver.dart, Request log]: $nearbyDriverList");
   }
+
+  static void addNearbyLocation(NearbyDriver driver) {
+    int index =
+    nearbyDriverList.indexWhere((element) => element.key == driver.key);
+    if(index < 0){
+      //not found, add new element
+      nearbyDriverList.add(driver);
+    }else{ //element already there, updating it's value
+      nearbyDriverList[index].longitude = driver.longitude;
+      nearbyDriverList[index].latitude = driver.latitude;
+      nearbyDriverList[index].serviceType = driver.serviceType;
+      nearbyDriverList[index].key = driver.key;
+    }
+    print("Adding nearbydriver[nearbyDriver.dart, Request log]: $nearbyDriverList");
+  }
 }

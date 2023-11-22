@@ -16,7 +16,7 @@ class SearchingForDriver extends StatefulWidget {
     required this.cancelDriverSearch,
   });
 
-  final VoidCallback cancelDriverSearch;
+  final void Function({bool? isDriverNotFound}) cancelDriverSearch;
 
   @override
   State<SearchingForDriver> createState() => _SearchingForDriver();
@@ -59,7 +59,8 @@ class SearchingForDriverPanelWidget extends StatefulWidget {
 
   final ScrollController controller;
 
-  final VoidCallback onPressed;
+  // final VoidCallback onPressed;
+  final void Function({bool isDriverNotFound}) onPressed;
 
   @override
   State<SearchingForDriverPanelWidget> createState() =>
@@ -69,6 +70,8 @@ class SearchingForDriverPanelWidget extends StatefulWidget {
 class _SearchingForDriverPanelWidgetState
     extends State<SearchingForDriverPanelWidget> {
   int _secondsRemaining = 30;
+  int totalSearchRounds = 0;
+  int maxSearchRounds = 4;
   late Timer _timer;
 
   @override
@@ -85,6 +88,11 @@ class _SearchingForDriverPanelWidgetState
           _secondsRemaining--;
         } else {
           _secondsRemaining = 30; // Reset the countdown to 30 seconds
+          totalSearchRounds++;
+        }
+        if(totalSearchRounds >= maxSearchRounds){
+          print('dinesh time to go back');
+          widget.onPressed(isDriverNotFound: true);
         }
       });
     });
@@ -116,9 +124,9 @@ class _SearchingForDriverPanelWidgetState
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Looking For Nearby Driver",
+                (totalSearchRounds >= 2) ? "Hold on we're still searching for a driver" : "Looking For Nearby Driver",
                 style: CustomFonts.poppins(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.mainBlack,
                 ),

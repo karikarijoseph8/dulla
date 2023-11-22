@@ -63,7 +63,7 @@ dependencies:
   geohash_plus: ^1.1.1
   flutter_polyline_points: ^2.0.0
   shared_preferences: ^2.2.2
-  
+  fluttertoast: ^8.2.4
 
   #
   # url_launcher: ^6.1.14
