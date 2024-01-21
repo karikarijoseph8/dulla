@@ -41,11 +41,11 @@ dependencies:
   google_maps_flutter: ^2.4.0
   geolocator: ^9.0.2
   location: ^5.0.1
-  flutter_geofire: ^2.0.3
-  # flutter_geofire:
-  #       git:
-  #         url: https://github.com/karikarijoseph8/orbitfire.git
-  #         #ref: geofire-major
+#  flutter_geofire: ^2.0.3
+  flutter_geofire:
+    git:
+      url: https://github.com/karikarijoseph8/geofire.git
+      ref: rotation_feature_implemented
   sliding_up_panel: ^2.0.0+1
   intl: ^0.18.1
   slide_to_confirm: ^1.1.0

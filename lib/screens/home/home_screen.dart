@@ -68,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   //Position? currentPosition;
   bool nearbyDriversKeysLoaded = false;
+
   //Polyline
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> _polylines = {};
@@ -82,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late DirectionDetails tripDirectionDetails;
   bool showLocationButton = false;
   late LatLng lastPosition;
+
   //Animations
   late AnimationController locBtnAnimaController;
   late Animation<double> locBtnScaleAnima;
@@ -127,10 +129,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 // Create a timer that fires every 2 seconds and increments the zoom level.
   late Timer zoomTimer;
   bool myLocationEnabled = true;
+
 //bools
   LocationHive? locationHiveData;
 
   final MapMethods mapMethods = MapMethods();
+
   // late UserEntity userData;
   SystemUiOverlayStyle _currentStyle = SystemUiOverlayStyle.light;
 
@@ -467,40 +471,40 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Visibility(
               visible: showOrderBottomSheet,
               child: OrderBottomSheet(
-                isDriverNotFound: isDriverNotFound,
-                onOrderPressed: () {
-                  availableDrivers = NearbyDriverBot.nearbyDriverList;
-                  setState(() {
-                    appState = 'REQUESTING';
-                  });
-                  createRideRequest(context);
-                  callRideSearcher();
+                  isDriverNotFound: isDriverNotFound,
+                  onOrderPressed: () {
+                    availableDrivers = NearbyDriverBot.nearbyDriverList;
+                    setState(() {
+                      appState = 'REQUESTING';
+                    });
+                    createRideRequest(context);
+                    callRideSearcher();
 
-                  animateSearching();
-                  findDriver();
+                    animateSearching();
+                    findDriver();
 
-                  //print("It has been pressed");
-                },
-                callbackCarsAvailableOrNot: (bool isCarsAvailable){
-                  setState(() {
-                    isDriverNotFound = isCarsAvailable != true;
-                    if(isDriverNotFound){
-                      final routeDataProvider = Provider.of<RouteDataProvider>(
-                          context, listen: false);
-                      Fluttertoast.showToast(
-                          // msg: "Sorry, no cars available for your route at the moment. Please try different cars",
-                          msg: "${routeDataProvider.carAndPrice.categoryName} cars are not available",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      );
-                    }
-                  });
-                }
-              ),
+                    //print("It has been pressed");
+                  },
+                  callbackCarsAvailableOrNot: (bool isCarsAvailable) {
+                    setState(() {
+                      isDriverNotFound = isCarsAvailable != true;
+                      if (isDriverNotFound) {
+                        final routeDataProvider =
+                            Provider.of<RouteDataProvider>(context,
+                                listen: false);
+                        Fluttertoast.showToast(
+                            // msg: "Sorry, no cars available for your route at the moment. Please try different cars",
+                            msg:
+                                "${routeDataProvider.carAndPrice.categoryName} cars are not available",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    });
+                  }),
             ),
             Visibility(
               visible: addressVisibility,
@@ -588,23 +592,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 cancelDriverSearch: ({bool? isDriverNotFound}) async {
                   setState(() {
                     this.isDriverNotFound = isDriverNotFound == true;
-                    if(this.isDriverNotFound){
-                        showDialog<String>(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Uh ho...'),
-                            content: const Text('No drivers are available for your route right now. Please try again later. Thank you for your patience'),
-                            actions: <Widget>[
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, 'OK'),
-                                  child: const Text('OK'),
-                                ),
-                            ],
-                          ),
-                        );
-                      }
+                    if (this.isDriverNotFound) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Uh ho...'),
+                          content: const Text(
+                              'No drivers are available for your route right now. Please try again later. Thank you for your patience'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   });
-                  cancelRideRequest(appScale,false);
+                  cancelRideRequest(appScale, false);
 
                   // var response = await Navigator.of(context).push(
                   //   SlideUpRoute(
@@ -755,16 +760,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return;
     }
     final routeDataProvider =
-    Provider.of<RouteDataProvider>(context, listen: false);
+        Provider.of<RouteDataProvider>(context, listen: false);
 
     print("Request log: Driver Found");
     for (var driver in availableDrivers) {
-      print("Request log: routeDataProvider.carAndPrice.categoryName ${routeDataProvider.carAndPrice.categoryName}");
+      print(
+          "Request log: routeDataProvider.carAndPrice.categoryName ${routeDataProvider.carAndPrice.categoryName}");
 
       print("Request log: (driver.serviceType) ${driver}");
 
-      var notifySelectedCarDrivers = ((driver.serviceType) == (routeDataProvider.carAndPrice.categoryName));
-      if(notifySelectedCarDrivers) {
+      var notifySelectedCarDrivers = ((driver.serviceType) ==
+          (routeDataProvider.carAndPrice.categoryName));
+      if (notifySelectedCarDrivers) {
         print('notify driver');
         notifyDriver(driver);
         print("Driver Key: ${driver.key}");
@@ -917,7 +924,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         return;
       }
 
-      if(data!['driverID'] == 'waiting'){
+      if (data!['driverID'] == 'waiting') {
         print('dinesh waiting');
         return;
       }
@@ -995,12 +1002,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             double.parse(data['driverLocation']['latitude'].toString());
         double driverLng =
             double.parse(data['driverLocation']['longitude'].toString());
+        double driverDirection =
+            double.parse(data['driverLocation']['rotation'].toString());
         LatLng driverLocation = LatLng(driverLat, driverLng);
-
+        print(
+            "dineshRotation driverLocation Direction value is $driverDirection");
         Marker driverMarker = Marker(
           markerId: const MarkerId('riderMarker1'),
           anchor: const Offset(0.5, 0.5),
           position: driverLocation,
+          rotation: driverDirection,
           icon: driverMarkerIcon!,
         );
 
@@ -1080,6 +1091,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           setState(() {
             _polylines.add(polyline);
+          });
+
+          setState(() {
+            markers.clear();
+            markers.add(driverMarker);
           });
 
           gmcontroller.animateCamera(
@@ -1328,13 +1344,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         switch (callBack) {
           case Geofire.onKeyEntered:
             NearbyDriver nearbyDriver = NearbyDriver(
-                longitude: 0, key: '', latitude: 0, serviceType: '');
+                longitude: 0,
+                key: '',
+                latitude: 0,
+                serviceType: '',
+                rotation: 0.0,
+                accuracy: 0.0);
             String service = await getServiceType(driverServiceTypeRef, map);
             print('sservices $service');
             nearbyDriver.key = map['key'];
             nearbyDriver.latitude = map['latitude'];
             nearbyDriver.longitude = map['longitude'];
             nearbyDriver.serviceType = service;
+            nearbyDriver.accuracy = map['accuracy'] ?? 0.0;
+            nearbyDriver.rotation = map['rotation'] ?? 0.0;
             NearbyDriverBot.addNearbyLocation(nearbyDriver);
             print('sservices ${NearbyDriverBot.nearbyDriverList.length}');
             if (nearbyDriversKeysLoaded) {
@@ -1349,7 +1372,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           case Geofire.onKeyMoved:
             NearbyDriver nearbyDriver = NearbyDriver(
-                latitude: 0, longitude: 0, key: '', serviceType: '');
+                latitude: 0,
+                longitude: 0,
+                key: '',
+                serviceType: '',
+                rotation: 0.0,
+                accuracy: 0.0);
 
             String service = await getServiceType(driverServiceTypeRef, map);
 
@@ -1357,6 +1385,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             nearbyDriver.latitude = map['latitude'];
             nearbyDriver.longitude = map['longitude'];
             nearbyDriver.serviceType = service;
+            nearbyDriver.accuracy = map['accuracy'];
+            nearbyDriver.rotation = map['rotation'];
             NearbyDriverBot.updateNearbyLocation(nearbyDriver);
             updateDriversOnMap();
             break;
@@ -1401,7 +1431,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         markerId: MarkerId('driver${driver.key}'),
         position: driverPosition,
         icon: nearbyIcon!,
-        rotation: MapAPIService.generateRandomNumber(360),
+        rotation: driver.rotation /*MapAPIService.generateRandomNumber(360)*/,
       );
 
       print("Map - Marker Icon ${nearbyIcon.toString()}");
@@ -1729,7 +1759,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-  Future<void> cancelRideRequest(AppScale appScale, bool backBtn_pressed) async {
+  Future<void> cancelRideRequest(
+      AppScale appScale, bool backBtn_pressed) async {
     updateMapPadding(const EdgeInsets.only(
       bottom: 400, //310
     ));
@@ -1768,22 +1799,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  // void _calculateDistance(
-  //     pickup, destination, RouteDataProvider routeDataProvider) {
-  //   const double earthRadius = 6371.0; // Radius of the Earth in kilometers
-  //   double lat1 = pickup.latitude * (pi / 180.0);
-  //   double lon1 = pickup.longitude * (pi / 180.0);
-  //   double lat2 = destination.latitude * (pi / 180.0);
-  //   double lon2 = destination.longitude * (pi / 180.0);
+// void _calculateDistance(
+//     pickup, destination, RouteDataProvider routeDataProvider) {
+//   const double earthRadius = 6371.0; // Radius of the Earth in kilometers
+//   double lat1 = pickup.latitude * (pi / 180.0);
+//   double lon1 = pickup.longitude * (pi / 180.0);
+//   double lat2 = destination.latitude * (pi / 180.0);
+//   double lon2 = destination.longitude * (pi / 180.0);
 
-  //   double dlon = lon2 - lon1;
-  //   double dlat = lat2 - lat1;
+//   double dlon = lon2 - lon1;
+//   double dlat = lat2 - lat1;
 
-  //   double a =
-  //       pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
-  //   double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+//   double a =
+//       pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
+//   double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-  //   double distance = earthRadius * c; // Distance in kilometers
-  //   routeDataProvider.updateDistance(distance);
-  // }
+//   double distance = earthRadius * c; // Distance in kilometers
+//   routeDataProvider.updateDistance(distance);
+// }
 }
